@@ -1,7 +1,5 @@
 FROM debian:buster
 
-WORKDIR /tmp
-
 RUN apt-get update \
     && apt-get install -y \
     procps wget \
@@ -9,10 +7,12 @@ RUN apt-get update \
     python-setuptools python-pip \
     && pip install supervisor supervisor-stdout
 
+WORKDIR /app
+
 RUN wget http://nginx.org/download/nginx-1.17.4.tar.gz \
     && tar -zxvf nginx-1.17.4.tar.gz \
     && rm nginx-1.17.4.tar.gz \
-    && cd /tmp/nginx-1.17.4 \
+    && cd /app/nginx-1.17.4 \
     && ./configure \
     --sbin-path=/usr/bin/nginx \
     --conf-path=/etc/nginx/nginx.conf \
@@ -22,10 +22,12 @@ RUN wget http://nginx.org/download/nginx-1.17.4.tar.gz \
     --with-pcre \
     --with-http_ssl_module \
     && make \
-    && make install
+    && make install \
+    && cd /app && rm -rf nginx-1.17.4
 
 RUN nginx -v
 
+COPY conf/nginx.conf /etc/nginx/nginx.conf 
 COPY conf/supervisor.conf /etc/supervisord.conf
 COPY conf/entrypoint.sh /usr/bin/entrypoint.sh
 
