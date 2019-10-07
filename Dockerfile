@@ -41,13 +41,14 @@ COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/supervisor.conf /etc/supervisord.conf
 COPY conf/entrypoint.sh /usr/bin/entrypoint.sh
 
-# Generate and self-signed certificate and certificate key
+# Generate self-signed certificate, certificate key and DH param file
 RUN mkdir /etc/nginx/ssl \
     && openssl req -x509 -nodes \
     -days 10 -newkey rsa:2048 \
     -keyout /etc/nginx/ssl/self.key \
     -out /etc/nginx/ssl/self.crt \
-    -subj "/C=AU/ST=NSW/L=Sydney/O=jimmy/CN=duliu.me"
+    -subj "/C=AU/ST=NSW/L=Sydney/O=jimmy/CN=duliu.me" \
+    && openssl dhparam -out /etc/nginx/ssl/dhparam.pem 2048 
 
 EXPOSE 80 443
 ENTRYPOINT [ "/usr/bin/entrypoint.sh" ]
