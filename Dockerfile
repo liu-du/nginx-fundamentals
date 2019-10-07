@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 # Install utilities, build deps, php, supervisor and supervisor-stdout 
 RUN apt-get update \
     && apt-get install -y \
-    procps wget \
+    procps wget curl apache2-utils \
     build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev libgd-dev \
     python-setuptools python-pip \
     php-fpm \
