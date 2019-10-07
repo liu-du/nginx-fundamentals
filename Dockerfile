@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
     && apt-get install -y \
     procps wget \
-    build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev \
+    build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev libgd-dev \
     python-setuptools python-pip \
     php-fpm \
     && mkdir -p /run/php/ \
@@ -27,11 +27,13 @@ RUN wget http://nginx.org/download/nginx-1.17.4.tar.gz \
     --pid-path=/var/run/nginx.pid \
     --with-pcre \
     --with-http_ssl_module \
+    --with-http_image_filter_module=dynamic \
+    --modules-path=/etc/nginx/modules \
     && make \
     && make install \
     && cd /app && rm -rf nginx-1.17.4
 
-RUN nginx -v
+RUN nginx -V
 
 # Copy configs for nginx and supervisor
 COPY conf/nginx.conf /etc/nginx/nginx.conf 
