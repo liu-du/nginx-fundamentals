@@ -1,14 +1,20 @@
 FROM debian:buster
 
+ENV DEBIAN_FRONTEND noninteractive
+
+# Install utilities, build deps, php, supervisor and supervisor-stdout 
 RUN apt-get update \
     && apt-get install -y \
     procps wget \
     build-essential libpcre3 libpcre3-dev zlib1g zlib1g-dev libssl-dev \
     python-setuptools python-pip \
+    php-fpm \
+    && mkdir -p /run/php/ \
     && pip install supervisor supervisor-stdout
 
 WORKDIR /app
 
+# Build nginx from source
 RUN wget http://nginx.org/download/nginx-1.17.4.tar.gz \
     && tar -zxvf nginx-1.17.4.tar.gz \
     && rm nginx-1.17.4.tar.gz \
@@ -27,6 +33,7 @@ RUN wget http://nginx.org/download/nginx-1.17.4.tar.gz \
 
 RUN nginx -v
 
+# Copy configs for nginx and supervisor
 COPY conf/nginx.conf /etc/nginx/nginx.conf 
 COPY conf/supervisor.conf /etc/supervisord.conf
 COPY conf/entrypoint.sh /usr/bin/entrypoint.sh
