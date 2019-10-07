@@ -8,6 +8,7 @@ build: ## Build nginx image
 run: ## Run nginx image
 	docker run --rm -d \
 	-p 80:80 \
+	-p 443:443 \
 	--name nginx-fundamentals-background \
 	-v $(shell pwd)/conf/nginx.conf:/etc/nginx/nginx.conf:consistent \
 	-v $(shell pwd)/src:/app:consistent \

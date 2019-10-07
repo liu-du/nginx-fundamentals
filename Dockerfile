@@ -27,6 +27,7 @@ RUN wget http://nginx.org/download/nginx-1.17.4.tar.gz \
     --pid-path=/var/run/nginx.pid \
     --with-pcre \
     --with-http_ssl_module \
+    --with-http_v2_module \
     --with-http_image_filter_module=dynamic \
     --modules-path=/etc/nginx/modules \
     && make \
@@ -40,5 +41,13 @@ COPY conf/nginx.conf /etc/nginx/nginx.conf
 COPY conf/supervisor.conf /etc/supervisord.conf
 COPY conf/entrypoint.sh /usr/bin/entrypoint.sh
 
-EXPOSE 80
+# Generate and self-signed certificate and certificate key
+RUN mkdir /etc/nginx/ssl \
+    && openssl req -x509 -nodes \
+    -days 10 -newkey rsa:2048 \
+    -keyout /etc/nginx/ssl/self.key \
+    -out /etc/nginx/ssl/self.crt \
+    -subj "/C=AU/ST=NSW/L=Sydney/O=jimmy/CN=duliu.me"
+
+EXPOSE 80 443
 ENTRYPOINT [ "/usr/bin/entrypoint.sh" ]
