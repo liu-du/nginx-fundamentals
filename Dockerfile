@@ -30,6 +30,7 @@ RUN wget http://nginx.org/download/nginx-1.17.4.tar.gz \
     --with-http_v2_module \
     --with-http_image_filter_module=dynamic \
     --modules-path=/etc/nginx/modules \
+    --without-http_autoindex_module \
     && make \
     && make install \
     && cd /app && rm -rf nginx-1.17.4
